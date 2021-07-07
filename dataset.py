@@ -20,19 +20,11 @@ class NematicsDataset(BaseDataset):
 		inds = [list(map(int, re.findall(r'\d+', os.path.basename(fname))))[-1] for fname in fnames]
 		idxs = inds if idxs is None else np.intersect1d(idxs, inds)
 		return np.sort(idxs)
-
-	def get_image(self, idx):
-		subdir = os.path.join(self.root_dir, self.dataframe.folder[idx])
-		ind = self.dataframe.idx[idx]
-		nx = np.loadtxt(os.path.join(subdir, 'nx%d' % ind))
-		ny = np.loadtxt(os.path.join(subdir, 'ny%d' % ind))
-		return {'nx': nx, 'ny': ny}
 	
 	def __getitem__(self, idx):
 		if torch.is_tensor(idx):
 			idx = idx.tolist()
 		
-		sample = self.get_image(idx)
 		subdir = os.path.join(self.root_dir, self.dataframe.folder[idx])
 		ind = self.dataframe.idx[idx]
 		sample = {
