@@ -63,8 +63,8 @@ class BaseDataset(Dataset):
 		self.train_indices = self.dataframe[self.dataframe.folder.isin(tfolders)].index.to_numpy()
 		self.validation_indices = self.dataframe[self.dataframe.folder.isin(vfolders)].index.to_numpy()
 
-		print('Training set includes %d embryos and %d items' % (nfolders-vidxs, len(self.train_indices)))
-		print('Validation set includes %d embryos and %d items' % (vidxs, len(self.validation_indices)))
+		print('Training set includes %d folders and %d items' % (nfolders-vidxs, len(self.train_indices)))
+		print('Validation set includes %d folders and %d items' % (vidxs, len(self.validation_indices)))
 
 	def get_loader(self, indices, batch_size, num_workers, pin_memory=True):
 		sampler = SubsetRandomSampler(indices)

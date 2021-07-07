@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 from base.models.base_predictor import BasePredictor
 from base.models.unet import Unet
+from base.models.conv_layers import RepeatFlatCnnCell
 from base.datasets.base_dataset import RandomFlip, RandomTranspose, RandomCrop, ToTensor
 from dataset import ProcessInputs
 
@@ -14,12 +15,13 @@ class BaseModel(BasePredictor):
 		return batch['fluorescence'], batch['label']
 	
 	def get_transform(self, crop_size, prob=0.5):
-		return transforms.Compose([
+		return torchvision.transforms.Compose([
 			ProcessInputs(),
 			RandomFlip(prob),
 			RandomTranspose(prob),
 			RandomCrop(crop_size),
-			ToTensor()])
+			ToTensor(),
+		])
 	
 	def show_defects(self, ax, x, y):
 		if len(x.shape) == 3:
@@ -73,7 +75,7 @@ class UnetPredictor(BaseModel, Unet):
 		return x
 	
 	def getxy(self, batch):
-		return BaseModel.getxy(self, batch):
+		return BaseModel.getxy(self, batch)
 	
 	def predict_plot(self, batch):
 		return BaseModel.predict_plot(self, batch)
@@ -89,6 +91,7 @@ class fcn_resnet50(BaseModel):
 		self.model = torchvision.models.segmentation.fcn_resnet50(num_classes=3, pretrained=False)
 		self.name = 'fcn_resnet50'
 		self.loss = torch.nn.CrossEntropyLoss()
+		self.save_hyperparameters('batch_size', 'crop_size', 'learning_rate', 'scheduler_step', 'directory')
 
 	def forward(self, x):
 		return self.model(x.repeat(1, 3, 1, 1))['out']
@@ -103,6 +106,7 @@ class fcn_resnet101(BaseModel):
 		self.name = 'fcn_resnet101'
 		self.model = torchvision.models.segmentation.fcn_resnet101(num_classes=3, pretrained=False)
 		self.loss = torch.nn.CrossEntropyLoss()
+		self.save_hyperparameters('batch_size', 'crop_size', 'learning_rate', 'scheduler_step', 'directory')
 	
 	def forward(self, x):
 		return self.model(x.repeat(1, 3, 1, 1))['out']

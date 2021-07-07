@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from base_models.conv_layers import FlatCnnCell, DownsampleCell, UpsampleCell, RepeatFlatCnnCell
-from base_models.base_predictor import BasePredictor
+from base.models.conv_layers import FlatCnnCell, DownsampleCell, UpsampleCell, RepeatFlatCnnCell
+from base.models.base_predictor import BasePredictor
 
 '''
 Generic convolutional unet predictor
